@@ -1,0 +1,66 @@
+﻿@page "/"
+@using Car_Rental.Business.Classes
+@using Car_Rental.Common.Interface
+@using Car_Rental.Common.Enum
+@inject BookingProcessor bp
+
+<PageTitle>Car rental</PageTitle>
+
+<h1>Car rental</h1>
+<p>Welcome to your local car rental!</p>
+<table class="table">
+    <!--Row-->
+    <thead class="table-primary fw-bold">
+        <tr>
+            <th scope="col">VIN</th>
+            <th scope="col">Make</th>
+            <th scope="col">Type</th>
+            <th scope="col">Odometer (km)</th>
+            <th scope="col">Cost (km)</th>
+            <th scope="col">Cost (day)</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <!--Colomn-->
+    <tbody>
+        @*
+            Problem: Statusen stämmer inte överens med bokningarna
+            (Upptaget=tillgänlig och vise versa)
+            *@
+        @foreach (var car in bp.GetVehicles())
+        {
+            <tr>
+                <th scope="row">
+                    @car.VIN
+                </th>
+                <th>
+                    @car.Maker
+                </th>
+                <th>
+                    @car.VehicleType
+                </th>
+                <th>
+                    @car.Odometer
+                </th>
+                <th>
+                    @car.PriceKm
+                </th>
+                <th>
+                    @car.PriceDay
+                </th>
+                <th>
+                    @if (@car.Status.Equals(VehicleStatuses.Booked))
+                    {
+                        <span class="badge rounded-pill bg-dark">@car.Status</span>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill bg-danger">@car.Status</span>
+                    }
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>Note that all prices are in Swedish crowns (SEK)</p>

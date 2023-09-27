@@ -1,0 +1,38 @@
+﻿@page "/fetchdata"
+@using Car_Rental.Business.Classes
+@using Car_Rental.Common.Interface
+@using Car_Rental.Common.Enum
+@inject BookingProcessor bp
+
+<PageTitle>Customers</PageTitle>
+
+<h1>Customer</h1>
+<p>Below is a list of customers:</p>
+
+<!--Customers-->
+<table class="table">
+    <!--Row-->
+    <thead class="table-primary fw-bold">
+    <th scope="col">SSN</th>
+    <th scope="col">Last name</th>
+    <th scope="col">First name</th>
+    </thead>
+
+    <!--Column-->
+    <tbody>
+        @foreach (var cust in bp.GetCustomers())
+        {
+            <tr>
+                <th>
+                    (@cust.SSN)
+                </th>
+                <th>
+                    @cust.LastName
+                </th>
+                <th>
+                    @cust.FirstName
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>

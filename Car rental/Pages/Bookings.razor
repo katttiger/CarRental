@@ -1,0 +1,101 @@
+﻿@page "/counter"
+@using Car_Rental.Business.Classes
+@using Car_Rental.Common.Interface
+@using Car_Rental.Common.Enum
+@inject BookingProcessor bp
+
+<PageTitle>Bookings</PageTitle>
+<h1>Bookings</h1>
+<p>Handle your bookings down here: </p>
+<!--Bookings-->
+<table class="table">
+
+    <!--Rows-->
+    <thead class="table-primary fw-bold">
+        <tr>
+            <th scope="col">VIN</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Odometer (km)</th>
+            <th scope="col">Returned (km)</th>
+            <th scope="col">Day rented</th>
+            <th scope="col">Day returned</th>
+            <th scope="col">Cost (SEK)</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+
+    <!--Columns-->
+    <!--Problem: Bokningen visar fel (alla är stängda/öppna)-->
+    <tbody>
+        @foreach (var b in bp.GetBookings())
+        {
+            <tr>
+                <!--VIN-->
+                <th>
+                    @b.Vehicle.VIN
+                </th>
+
+                <!--Customer-->
+                <th>
+                    @b.Customer.LastName @b.Customer.FirstName (@b.Customer.SSN)
+                </th>
+
+                <!--Current Odometer-->
+                <th>
+                    @b.Odometer
+                </th>
+
+                <!--Odometer on returned-->
+                <th>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+
+                        @b.DrivenKm
+                    }
+                    else
+                    {
+                        <input />
+                    }
+                </th>
+
+                <!--Day rented-->
+                <th>
+                    @b.DayRented.ToShortDateString()
+                </th>
+
+                <!--Day returned-->
+                <th>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        @b.DayReturned.ToShortDateString()
+                    }
+                </th>
+
+                <!--Cost/day-->
+                <th>
+                    
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        @b.CostToPay
+                    }
+                    else
+                    {
+
+                    }
+                </th>
+                <!--Status-->
+                <th>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        <span class="badge bg-success">Closed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Booked</span>
+                    }
+                </th>
+
+            </tr>
+        }
+    </tbody>
+</table>
