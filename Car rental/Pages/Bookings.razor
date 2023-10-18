@@ -1,4 +1,4 @@
-﻿@page "/counter"
+@page "/counter"
 @using Car_Rental.Business.Classes
 @using Car_Rental.Common.Interface
 @using Car_Rental.Common.Enum
@@ -11,7 +11,7 @@
 <table class="table">
 
     <!--Rows-->
-    <thead class="table-primary fw-bold">
+    <thead class="table-secondary">
         <tr>
             <th scope="col">VIN</th>
             <th scope="col">Customer</th>
@@ -31,60 +31,56 @@
         {
             <tr>
                 <!--VIN-->
-                <th>
+                <td>
                     @b.Vehicle.VIN
-                </th>
+                </td>
 
                 <!--Customer-->
-                <th>
+                <td>
                     @b.Customer.LastName @b.Customer.FirstName (@b.Customer.SSN)
-                </th>
+                </td>
 
                 <!--Current Odometer-->
-                <th>
+                <td>
                     @b.Odometer
-                </th>
+                </td>
 
-                <!--Odometer on returned-->
-                <th>
+                <!--Odometer on returned
+                    The distance traveled is not added.
+                -->
+                <td>
                     @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
                     {
-
                         @b.DrivenKm
                     }
-                    else
-                    {
-                        <input />
-                    }
-                </th>
+                    else{}
+                </td>
 
                 <!--Day rented-->
-                <th>
+                <td>
                     @b.DayRented.ToShortDateString()
-                </th>
+                </td>
 
                 <!--Day returned-->
-                <th>
+                <td>
                     @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
                     {
                         @b.DayReturned.ToShortDateString()
                     }
-                </th>
+                </td>
 
-                <!--Cost/day-->
-                <th>
-                    
+                <!--Cost/day
+                    not working! No cost is displayed
+                -->
+                <td>
                     @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
                     {
                         @b.CostToPay
                     }
-                    else
-                    {
-
-                    }
-                </th>
+                    else{}
+                </td>
                 <!--Status-->
-                <th>
+                <td>
                     @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
                     {
                         <span class="badge bg-success">Closed</span>
@@ -93,7 +89,7 @@
                     {
                         <span class="badge bg-danger">Booked</span>
                     }
-                </th>
+                </td>
 
             </tr>
         }
