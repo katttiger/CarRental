@@ -1,56 +1,60 @@
 ﻿using Car_Rental.Common.Enum;
 using Car_Rental.Common.Interface;
+using Car_rental.ExtensionMethods;
 
 namespace Car_Rental.Common.Classes
 {
     public class Booking : IBooking
     {
+        public int Id { get; set; }
         public ICustomer Customer { get; init; }
         public IVehicle Vehicle { get; init; }
-        public string VIN {  get; init; }
+        public string VIN { get; init; }
         public double Odometer { get; set; }
         public double DrivenKm { get; set; }
         public DateTime DayRented { get; init; }
         public DateTime DayReturned { get; private set; }
+        public double DailyCost { get; set; }
+        public double KmCost { get; set; }
         public double CostToPay { get; set; }
 
-        private double _totalDays;
+        public bool isOpen { get; set; }
 
-        public Booking(Customer cust, IVehicle v)
+        public Booking(int id, ICustomer cust, IVehicle v, bool IsOpen=true)
         {
+            Id = id;
             Customer = cust;
             Vehicle = v;
             VIN = v.VIN;
             DayRented = DateTime.Now;
             Odometer = v.Odometer;
             Vehicle.ChangeStatus(VehicleStatuses.Available);
+            DailyCost = Vehicle.PriceDay;
+            KmCost = Vehicle.PriceKm;
+            isOpen = IsOpen;
         }
-       
-        public void ReturnVehicle(IVehicle vehicle, double drivenKm)
+        public Booking()
+        {
+
+        }
+
+        public double ReturnVehicle(IVehicle vehicle, double drivenKm)
         {
             //Change status to "not booked"
             vehicle.ChangeStatus(VehicleStatuses.Booked);
 
             //DayReturned=DayRented.AddDays(daysHired);
-            DayReturned = DateTime.Now; 
+            DayReturned = DateTime.Now;
 
-            CalculateDate(DayRented, DayReturned);
-
+            DailyCost = VExtensions.Duration(DayRented, DayReturned) * DailyCost;
+            KmCost = VExtensions.KmDriven(drivenKm, vehicle.PriceKm);
+           
             //Update odometer
             vehicle.UpdateOdomoter(drivenKm);
 
             //Cost
-            CostToPay = _totalDays * vehicle.PriceDay + drivenKm * vehicle.PriceKm;
-            
-
-            void CalculateDate(DateTime dRent, DateTime dReturn)
-            {
-                var tDays = (dReturn - dRent).TotalDays;
-                if (tDays < 1)
-                    _totalDays = 1;
-                else
-                    _totalDays = tDays;
-            }
+            CostToPay = DailyCost * KmCost;
+            return CostToPay;
         }
     }
 }

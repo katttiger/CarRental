@@ -1,9 +1,11 @@
-﻿using Car_Rental.Common.Enum;
+﻿using Car_Rental.Common.Classes;
+using Car_Rental.Common.Enum;
 
 namespace Car_Rental.Common.Interface
 {
     public interface IBooking
     {
+        int Id { get; }
         ICustomer Customer { get; init; }
         IVehicle Vehicle { get; init; }
         public double Odometer { get; set; }
@@ -12,7 +14,8 @@ namespace Car_Rental.Common.Interface
         DateTime DayReturned { get; }
         double CostToPay { get; set; }
         public string VIN { get; init; }
+        public bool isOpen { get; set; }
 
-        void ReturnVehicle(IVehicle vehicle, double kmDriven);
+        public double ReturnVehicle(IVehicle vehicle, double kmDriven);
     }
 }

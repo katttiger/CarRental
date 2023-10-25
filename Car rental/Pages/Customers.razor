@@ -8,30 +8,62 @@
 
 <h1>Customer</h1>
 <p>Below is a list of customers:</p>
-
+@if (bp.sendError == true)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error: </strong>@bp.error
+    </div>
+}
 <!--Customers-->
 <table class="table">
     <!--Row-->
-    <thead class="table-primary fw-bold">
-    <th scope="col">SSN</th>
-    <th scope="col">Last name</th>
-    <th scope="col">First name</th>
+    <thead class="table-secondary fw-bold">
+        <tr>
+            <th scope="col">SSN</th>
+            <th scope="col">Last name</th>
+            <th scope="col">First name</th>
+        </tr>
     </thead>
 
     <!--Column-->
+    @*Problem: Added customer is edited when added to the list.
+    Good thing: I can add customers.
+    *@
     <tbody>
+        <tr>
+            @try
+            {
+                <td><input @bind="bp.Customer.SSN" placeholder="SSN" /></td>
+                <td><input @bind="bp.Customer.LastName" placeholder="Last name" /> </td>
+                <td>
+                    <input @bind="bp.Customer.FirstName" placeholder="First name" />
+                    &nbsp;
+                    <button class="btn btn-outline-success" @onclick="()=>bp.AddCustomer
+                    (bp.Customer.SSN, bp.Customer.FirstName, bp.Customer.LastName)">
+                        Add
+                    </button>
+                </td>
+
+            }
+            catch (Exception)
+            {
+                throw new ArgumentNullException();
+            }
+        </tr>
         @foreach (var cust in bp.GetCustomers())
         {
+
             <tr>
-                <th>
-                    (@cust.SSN)
-                </th>
-                <th>
+                <td scope="row">
+                    @cust.SSN
+                </td>
+
+                <td>
                     @cust.LastName
-                </th>
-                <th>
+                </td>
+                <td>
                     @cust.FirstName
-                </th>
+                </td>
             </tr>
         }
     </tbody>

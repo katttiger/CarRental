@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Car_Rental.Business.Classes
+@using Car_Rental.Common.Classes;
 @using Car_Rental.Common.Interface
 @using Car_Rental.Common.Enum
 @inject BookingProcessor bp
@@ -8,47 +9,173 @@
 
 <h1>Car rental</h1>
 <p>Welcome to your local car rental!</p>
-<table class="table">
-    <!--Row-->
-    <thead class="table-primary fw-bold">
+
+
+@*Error message*@
+@if (bp.sendError)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error: </strong>@bp.error
+    </div>
+}
+@*Import a sorting function?*@
+<!--Row-->
+<table class="table table-striped ">
+    <thead class="table table-secondary">
         <tr>
             <th scope="col">VIN</th>
             <th scope="col">Make</th>
-            <th scope="col">Type</th>
-            <th scope="col">Odometer (km)</th>
+            <th scope="col">Odometer</th>
             <th scope="col">Cost (km)</th>
+            <th scope="col">Type</th>
             <th scope="col">Cost (day)</th>
+            <th scope="col">Action</th>
             <th scope="col">Status</th>
         </tr>
     </thead>
     <!--Colomn-->
     <tbody>
-        @*
-            Problem: Statusen stämmer inte överens med bokningarna
-            (Upptaget=tillgänlig och vise versa)
+        @if (bp.hiring == true)
+        {
+            <tr>
+                <td><input class="form-control-sm" disabled="disabled" placeholder="VIN" @bind="bp.Vehicle.VIN" /></td>
+                <td><input class="form-control-sm" disabled="disabled" placeholder="Make" @bind="bp.Vehicle.Maker" /></td>
+                <td><input class="form-control-sm" disabled="disabled" placeholder="Odometer" @bind="bp.Vehicle.Odometer" /></td>
+                <td><input class="form-control-sm" disabled="disabled" placeholder="Cost km" @bind="bp.Vehicle.PriceKm" /></td>
+
+                <td>
+                    <div class="input-group-sm d-flex disabled">
+                        <select class="form-select border border-dark" disabled="disabled" id="inputGroupSelect04" @bind=bp.Vehicle.VehicleType>
+                            <option value="" selected></option>
+                            @foreach (var vType in bp.VehicleTypeNames)
+                            {
+                                <option value="@bp.GetVehicleType(vType)">@vType </option>
+                            }
+                        </select>
+                    </div>
+                </td>
+
+                <td>
+                    @*PriceDay*@
+                </td>
+
+                <td>
+                    <button class="btn btn-outline-success btn-sm">
+                        Add
+                    </button>
+                </td>
+                <td>
+                    <span class="badge bg-warning">Processing</span>
+                </td>
+                <td>
+                    @* Sort *@
+                </td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td><input class="form-control-sm" placeholder="VIN" @bind="bp.Vehicle.VIN" /></td>
+                <td><input class="form-control-sm" placeholder="Make" @bind="bp.Vehicle.Maker" /></td>
+                <td><input class="form-control-sm" placeholder="Odometer" @bind="bp.Vehicle.Odometer" /></td>
+                <td><input class="form-control-sm" placeholder="Cost km" @bind="bp.Vehicle.PriceKm" /></td>
+                @*Dropdown for vechieltypes -> A new car is added without type if left empty
             *@
+                <td>
+                    <div class="input-group-sm d-flex">
+                        <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Vehicle.VehicleType>
+                            <option value="" selected></option>
+                            @foreach (var vType in bp.VehicleTypeNames)
+                            {
+                                <option value="@bp.GetVehicleType(vType)">@vType </option>
+                            }
+                        </select>
+                    </div>
+                </td>
+                @*  *@
+                <td></td>
+                <td>
+                    <button class="btn btn-outline-success btn-sm" @onclick="()=>bp.AddVehicle(bp.Vehicle.Maker, bp.Vehicle.VIN, bp.Vehicle.Odometer,
+                        bp.Vehicle.PriceKm, bp.Vehicle.PriceDay, VehicleStatuses.Available, bp.Vehicle.VehicleType)">
+                        Add
+                    </button>
+
+                </td>
+                <td>
+                    @if (bp.hiring)
+                    {
+                        <span class="badge bg-warning">Processing</span>
+                    }
+                </td>
+            </tr>
+        }
+
         @foreach (var car in bp.GetVehicles())
         {
             <tr>
                 <th scope="row">
                     @car.VIN
                 </th>
-                <th>
+                <td>
                     @car.Maker
-                </th>
-                <th>
-                    @car.VehicleType
-                </th>
-                <th>
+                </td>
+                <td>
                     @car.Odometer
-                </th>
-                <th>
+                </td>
+                <td>
                     @car.PriceKm
-                </th>
-                <th>
+                </td>
+                <td>
+                    @car.VehicleType
+                </td>
+                <td>
                     @car.PriceDay
-                </th>
-                <th>
+                </td>
+
+                @*--Dropdown for customer--*@
+                <td>
+                    @if (bp.hiring == true)
+                    {
+
+                        <div class="input-group-sm d-flex">
+                            <select class="form-select border border-dark" disabled="disabled " id="inputGroupSelect04" @bind=bp.Customer.Id>
+                                <option value="Customer" selected></option>
+                                @foreach (var cust in bp.GetCustomers())
+                                {
+                                    <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
+                                }
+                            </select>
+                            <button class="btn-sm btn btn-primary" disabled="disabled"> Rent </button>
+                        </div>
+
+                    }
+                    else
+                    {
+                        @if (car.Status.Equals(VehicleStatuses.Available))
+                        {
+                            <div class="input-group-sm d-flex">
+                                <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Customer.Id>
+                                    <option value="Customer" selected></option>
+                                    @foreach (var cust in bp.GetCustomers())
+                                    {
+                                        <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
+                                    }
+                                </select>
+                                <button class="btn-sm btn btn-outline-primary" @onclick="()=>bp.RentVehicleAsync(car.Id, bp.Customer.Id)"> Rent </button>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="input-group-sm d-flex">
+                                <input @bind="bp.Booking.DrivenKm" class="small rounded-2" placeholder="Distance" />
+                                <button class="btn-sm btn btn-outline-success" @onclick="()=>bp.ReturnVehicle(car.Id, bp.Booking.DrivenKm)">Return</button>
+                            </div>
+                        }
+                    }
+
+                </td>
+                <td>
                     @if (@car.Status.Equals(VehicleStatuses.Booked))
                     {
                         <span class="badge rounded-pill bg-dark">@car.Status</span>
@@ -57,7 +184,7 @@
                     {
                         <span class="badge rounded-pill bg-danger">@car.Status</span>
                     }
-                </th>
+                </td>
             </tr>
         }
     </tbody>

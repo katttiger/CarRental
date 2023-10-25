@@ -3,43 +3,23 @@ using Car_Rental.Common.Interface;
 
 namespace Car_Rental.Common.Classes
 {
-    public class Motorcycle : IVehicle
+    public class Motorcycle : Vehicle
     {
-        public string VIN { get; set; }
-        public string Maker { get; set; }
-        public Vehicletypes VehicleType { get; set; }
-        public double Odometer { get; set; }
-        public double PriceKm { get; set; }
-        public double PriceDay { get; set; }
-        public VehicleStatuses Status { get; set; }
-
-
-        public void UpdateOdomoter(double km)
+    
+        public Motorcycle(int id, string vin, string make, Vehicletypes vehicleType,
+              double odo, double pKm, double pDay, VehicleStatuses on)
         {
-            Odometer += km;
-
-        }
-
-        public void ChangeStatus(VehicleStatuses stat)
-        {
-            if (stat == VehicleStatuses.Available)
-                Status = VehicleStatuses.Booked;
-            else
-                Status = VehicleStatuses.Available;
-
-        }
-
-        public Motorcycle(string vin, string make,  Vehicletypes vehicleTYpe, double odo, double pKm, double pDay, VehicleStatuses on)
-        {
+            Id = id;
             Maker = make;
-            VehicleType = vehicleTYpe;
+            VehicleType = vehicleType;
             Odometer = odo;
             PriceKm = pKm;
-            PriceDay = pDay;
-            Status= on;
+            Status = on;
             VIN = vin;
+        }
+        public Motorcycle()
+        {
 
         }
-      
     }
 }
