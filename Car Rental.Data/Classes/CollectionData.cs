@@ -93,7 +93,7 @@ namespace Car_Rental.Data.Classes
                 throw new Exception();
             }
         }
-
+        //
         //Data att injicera i listorna
         public CollectionData() => SeedData();
         public void SeedData()
