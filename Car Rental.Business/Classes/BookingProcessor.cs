@@ -18,7 +18,7 @@ namespace Car_Rental.Business.Classes
         public string error = string.Empty;
         public bool sendError = false;
         public bool hiring = false;
-
+        public int vStatus = 0;
         //Bookings
         //Get full list
         public IEnumerable<IBooking> GetBookings()
@@ -68,9 +68,28 @@ namespace Car_Rental.Business.Classes
         //Get full list
         public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
         =>
-            _db.Get<IVehicle>(null)?? throw new ArgumentNullException();
+            _db.Get<IVehicle>(null) ?? throw new ArgumentNullException();
 
         //+sorting funktion (move to razor)
+
+        public IEnumerable<IVehicle> SortVehicles(VehicleStatuses status = default)
+        {
+            //1. Fetch list
+
+            var vehicle = _db.Get<IVehicle>(null);
+            //2. Identify the objects with the wanted status
+            if (status.Equals(0))
+            {
+                return _db.Get<IVehicle>(null);
+            }
+
+            //3. Hide the objects that do not match
+            else
+            {
+                return vehicle.Where(v => v.Status.Equals(status));
+            }
+        }
+
         /* public IEnumerable<IVehicle> SortVehicles(VehicleStatuses status = default)
          {
              var vehicle = _db.Get<IVehicle>(null);
@@ -91,46 +110,53 @@ namespace Car_Rental.Business.Classes
         }
 
         //Async
+        //TODO: Fix errorhandling for when you don't add a customer
         public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
         {
-            if (vehicleId != null && customerId != null)
+            try
             {
-                var newB = _db.RentVehicle(vehicleId, customerId);
-                Booking = (Booking)newB;
-                try
+                if (vehicleId != 0 && customerId != 0)
                 {
-                    if (newB is null || newB.Vehicle.Status == VehicleStatuses.Available)
+                    var newB = _db.RentVehicle(vehicleId, customerId);
+                    Booking = (Booking)newB;
+                    try
                     {
-                        hiring = false;
-                        sendError = true;
-                        newB.Vehicle.Status = VehicleStatuses.Available;
-                        error = "Vehicle is already booked";
-                        return newB = null;
+                        if (newB is null || newB.Vehicle.Status == VehicleStatuses.Available)
+                        {
+                            hiring = false;
+                            sendError = true;
+                            newB.Vehicle.Status = VehicleStatuses.Available;
+                            error = "Vehicle is already booked";
+                            return newB = null;
+                        }
+                        else
+                        {
+                            hiring = true;
+                            _db.Add(newB);
+                            sendError = false;
+                            await Task.Delay(1500);
+                            hiring = false;
+                            return newB;
+                        }
                     }
-                    else
+                    catch (Exception)
                     {
-                        hiring = true;
-                        _db.Add(newB);
-                        sendError = false;
-                        await Task.Delay(1500);
-                        hiring = false;
-                        return newB;
+                        throw new Exception(error);
                     }
                 }
-                catch (Exception)
+                else
                 {
-
+                    sendError = true;
+                    hiring = false;
+                    error = "Must add customer";
                     throw new Exception(error);
                 }
-
             }
-            else
+            catch (Exception)
             {
-                sendError = true;
-                hiring = false;
-                error = "Must add customer";
-                throw new ArgumentNullException(error);
+                throw;
             }
+
         }
 
         /* public IEnumerable<IBooking> RentVehicle(int vehicleId, int customerId)
@@ -196,18 +222,25 @@ namespace Car_Rental.Business.Classes
         //Add customer
         public void AddCustomer(int ssn, string fName, string lName)
         {
-
-            if (_db.NextPersonId != null && fName != null && lName != null && ssn != null)
+            if (ssn != 0)
             {
-                sendError = false;
-                Customer = new(_db.NextPersonId, fName, lName, ssn);
-                _db.Add((ICustomer)Customer);
-                edit = false;
+                if (_db.NextPersonId != null && fName != null && lName != null && ssn != null)
+                {
+                    sendError = false;
+                    Customer = new(_db.NextPersonId, fName, lName, ssn);
+                    _db.Add((ICustomer)Customer);
+                    //edit = false;
+                }
+                else
+                {
+                    error = "Customer could not be added";
+                    sendError = true;
+                }
             }
             else
             {
+                error = "SSN cannot be 0 or empty";
                 sendError = true;
-                error = "Customer could not be added";
             }
         }
 
