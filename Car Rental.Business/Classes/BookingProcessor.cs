@@ -15,6 +15,7 @@ namespace Car_Rental.Business.Classes
         public Customer Customer = new();
         public Vehicle Vehicle = new();
         public Booking Booking = new();
+     
         public string error = string.Empty;
         public bool sendError = false;
         public bool hiring = false;
