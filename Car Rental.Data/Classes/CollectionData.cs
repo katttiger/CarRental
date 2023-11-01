@@ -19,9 +19,6 @@ namespace Car_Rental.Data.Classes
         readonly List<ICustomer> _persons = new List<ICustomer>();
         readonly List<IVehicle> _vehicles = new List<IVehicle>();
         readonly List<IBooking> _bookings = new List<IBooking>();
-
-        //Id of next element
-        //=>if 0=>1, but if the Id == max, add 1 position.
         public int NextVehicleId => _vehicles.Count.Equals(0) ? 1 : _vehicles.Max(b => b.Id) + 1;
         public int NextPersonId => _persons.Count.Equals(0) ? 1 : _persons.Max(b => b.Id) + 1;
         public int NextBookingId => _bookings.Count.Equals(0) ? 1 : _bookings.Max(b => b.Id) + 1;
