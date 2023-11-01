@@ -10,6 +10,7 @@ using System.Reflection;
 namespace Car_Rental.Data.Classes
 {
     //Data to be returned to the bp
+    //
     public class CollectionData : IData
     {
         //List
