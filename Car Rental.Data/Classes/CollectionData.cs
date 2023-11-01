@@ -14,7 +14,7 @@ namespace Car_Rental.Data.Classes
 {
     //Data to be returned to the bp
     public class CollectionData : IData
-    {//
+    {
         //List
         readonly List<ICustomer> _persons = new List<ICustomer>();
         readonly List<IVehicle> _vehicles = new List<IVehicle>();
