@@ -19,17 +19,9 @@
 }
 
 @*Sorting function*@
-@if (bp.hiring.Equals(false))
-{
-    <button class="btn btn-primary" @onclick="()=>bp.SortVehicles(VehicleStatuses.Available)">Available</button>
-    <button class="btn btn-primary" @onclick="()=>bp.SortVehicles(VehicleStatuses.Booked)">Booked</button>
-}
-else
-{
-    <button class="btn btn-primary" disabled="disabled">All</button>
-    <button class="btn btn-primary" disabled="disabled">Available</button>
-    <button class="btn btn-primary" disabled="disabled">Booked</button>
-}
+<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus()">All</button>
+<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Available)">Available</button>
+<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Booked)">Booked</button>
 
 <!--Row-->
 <table class="table table-striped ">
@@ -91,8 +83,7 @@ else
                 <td><input class="form-control-sm" placeholder="Make" @bind="bp.Vehicle.Maker" /></td>
                 <td><input class="form-control-sm" placeholder="Odometer" @bind="bp.Vehicle.Odometer" /></td>
                 <td><input class="form-control-sm" placeholder="Cost km" @bind="bp.Vehicle.PriceKm" /></td>
-                @*Dropdown for vechieltypes -> A new car is added without type if left empty
-            *@
+                @*Dropdown for vechieltypes *@
                 <td>
                     <div class="input-group-sm d-flex">
                         <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Vehicle.VehicleType>
@@ -111,13 +102,12 @@ else
                         bp.Vehicle.PriceKm, bp.Vehicle.PriceDay, VehicleStatuses.Available, bp.Vehicle.VehicleType)">
                         Add
                     </button>
-
                 </td>
                 <td>
                 </td>
             </tr>
         }
-        @foreach (var car in bp.GetVehicles())
+        @foreach (var car in bp.GetVehicles(bp.vStatus))
         {
             <tr>
                 <th scope="row">

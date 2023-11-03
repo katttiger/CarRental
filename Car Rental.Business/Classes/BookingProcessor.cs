@@ -8,6 +8,7 @@ namespace Car_Rental.Business.Classes
 {
     public class BookingProcessor
     {
+        #region
         //Data and resources
         private readonly IData _db;
         public BookingProcessor(IData db) => _db = db;
@@ -15,11 +16,13 @@ namespace Car_Rental.Business.Classes
         public Customer Customer = new();
         public Vehicle Vehicle = new();
         public Booking Booking = new();
-     
+
+        public VehicleStatuses vStatus { get; set; }
+
         public string error = string.Empty;
         public bool sendError = false;
         public bool hiring = false;
-        public int vStatus = 0;
+        #endregion
         //Bookings
         //Get full list
         public IEnumerable<IBooking> GetBookings()
@@ -67,30 +70,30 @@ namespace Car_Rental.Business.Classes
 
         //Vehicle
         //Get full list
+        public VehicleStatuses UpdateVStatus(VehicleStatuses vehicleStatuses = default)
+        => vStatus = vehicleStatuses;
+
         public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
-        =>
-            _db.Get<IVehicle>(null) ?? throw new ArgumentNullException();
-
-        //+sorting funktion (move to razor)
-
-        public IEnumerable<IVehicle> SortVehicles(VehicleStatuses status = default)
         {
-            //1. Fetch list
-
-            var vehicle = _db.Get<IVehicle>(null);
-            //2. Identify the objects with the wanted status
-            if (status.Equals(0))
+            var list = _db.Get<IVehicle>(null);
+            if (list is not null)
             {
-                return _db.Get<IVehicle>(null);
+                vStatus = status;
+                var vehicle = list;
+                //2. Identify the objects with the wanted status
+                if (!vStatus.Equals(VehicleStatuses.Available) && !vStatus.Equals(VehicleStatuses.Booked))
+                    return vehicle;
+                else
+                {  //3. Hide the objects that do not match
+                    return vehicle.Where(v => v.Status.Equals(vStatus));
+                }
             }
-
-            //3. Hide the objects that do not match
             else
             {
-                return vehicle.Where(v => v.Status.Equals(status));
+                throw new ArgumentNullException();
             }
         }
-
+        //+sorting funktion (move to razor)
         /* public IEnumerable<IVehicle> SortVehicles(VehicleStatuses status = default)
          {
              var vehicle = _db.Get<IVehicle>(null);
