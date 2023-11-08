@@ -24,6 +24,8 @@ namespace Car_Rental.Data.Classes
         //In razor, display in dropdown:
         public string[] VehicleStatusNames() => Enum.GetNames(typeof(VehicleStatuses));
         public string[] VehicleTypeNames => Enum.GetNames(typeof(Vehicletypes));
+        public string[] VehicleMakeNames() => Enum.GetNames(typeof(Maker));
+
         public Vehicletypes GetVehicleType(string name) => (Vehicletypes)Enum.Parse(typeof(Vehicletypes), name);
 
         //Get
@@ -35,9 +37,7 @@ namespace Car_Rental.Data.Classes
             {
                 var list = (List<T>)fInfo.GetValue(this);
                 if (expression is not null)
-                {
                     list = list.Where(expression.Compile()).ToList();
-                }
                 return list;
             }
             else
@@ -76,7 +76,6 @@ namespace Car_Rental.Data.Classes
             {
                 FieldInfo? fInfo = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                  .FirstOrDefault(f => f.FieldType == typeof(List<T>));
-                ;
 
                 if (fInfo is not null)
                 {
@@ -93,7 +92,7 @@ namespace Car_Rental.Data.Classes
                 throw new Exception();
             }
         }
-        //
+        
         //Data att injicera i listorna
         public CollectionData() => SeedData();
         public void SeedData()

@@ -25,10 +25,8 @@ namespace Car_Rental.Business.Classes
         #endregion
         //Bookings
         //Get full list
-        public IEnumerable<IBooking> GetBookings()
-        {
-            return _db.Get<IBooking>(null);
-        }
+        public IEnumerable<IBooking> GetBookings()=>_db.Get<IBooking>(null);
+        
         //Get single
         public IBooking GetBooking(int vehicleId)
         {
@@ -47,12 +45,8 @@ namespace Car_Rental.Business.Classes
 
         //Customer
         //Get full list
-        public IEnumerable<ICustomer> GetCustomers()
-        {
-            return _db.Get<ICustomer>(null);
-
-        }
-        //Get single
+        public IEnumerable<ICustomer> GetCustomers()=>_db.Get<ICustomer>(null);
+    //Get single
         public ICustomer? GetCustomer(string ssn)
         {
             var customer = _db.Single<ICustomer>(s => s.SSN.Equals(ssn));
@@ -80,11 +74,11 @@ namespace Car_Rental.Business.Classes
             {
                 vStatus = status;
                 var vehicle = list;
-                //2. Identify the objects with the wanted status
+              
                 if (!vStatus.Equals(VehicleStatuses.Available) && !vStatus.Equals(VehicleStatuses.Booked))
                     return vehicle;
                 else
-                {  //3. Hide the objects that do not match
+                {  
                     return vehicle.Where(v => v.Status.Equals(vStatus));
                 }
             }
@@ -93,14 +87,6 @@ namespace Car_Rental.Business.Classes
                 throw new ArgumentNullException();
             }
         }
-        //+sorting funktion (move to razor)
-        /* public IEnumerable<IVehicle> SortVehicles(VehicleStatuses status = default)
-         {
-             var vehicle = _db.Get<IVehicle>(null);
-             if (status.Equals(default))
-                 return _db.Get<Vehicle>(null);
-             return vehicle.Where(v => v.Status.Equals(status));
-         }*/
 
         //Get single
         public IVehicle? GetVehicle(int vehicleId)
@@ -117,50 +103,35 @@ namespace Car_Rental.Business.Classes
         //TODO: Fix errorhandling for when you don't add a customer
         public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
         {
-            try
+            if (customerId != null && vehicleId != null && vehicleId != 0 && customerId != 0)
             {
-                if (vehicleId != 0 && customerId != 0)
+                var newB = _db.RentVehicle(vehicleId, customerId);
+                Booking = (Booking)newB;
+                if (newB.Vehicle.Status == VehicleStatuses.Available)
                 {
-                    var newB = _db.RentVehicle(vehicleId, customerId);
-                    Booking = (Booking)newB;
-                    try
-                    {
-                        if (newB is null || newB.Vehicle.Status == VehicleStatuses.Available)
-                        {
-                            hiring = false;
-                            sendError = true;
-                            newB.Vehicle.Status = VehicleStatuses.Available;
-                            error = "Vehicle is already booked";
-                            return newB = null;
-                        }
-                        else
-                        {
-                            hiring = true;
-                            _db.Add(newB);
-                            sendError = false;
-                            await Task.Delay(1500);
-                            hiring = false;
-                            return newB;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception(error);
-                    }
+                    hiring = false;
+                    sendError = true;
+                    newB.Vehicle.Status = VehicleStatuses.Available;
+                    error = "Vehicle is already booked";
+                    return newB = null;
                 }
                 else
                 {
-                    sendError = true;
+                    hiring = true;
+                    _db.Add(newB);
+                    sendError = false;
+                    await Task.Delay(1500);
                     hiring = false;
-                    error = "Must add customer";
-                    throw new Exception(error);
+                    return newB;
                 }
             }
-            catch (Exception)
+            else
             {
-                throw;
+                sendError = true;
+                hiring = false;
+                error = "Must add customer";
+                throw new ArgumentNullException(error);
             }
-
         }
 
         /* public IEnumerable<IBooking> RentVehicle(int vehicleId, int customerId)
@@ -251,6 +222,7 @@ namespace Car_Rental.Business.Classes
         //Calling default interface methods
         public string[] VehicleStatusNames => _db.VehicleStatusNames();
         public string[] VehicleTypeNames => _db.VehicleTypeNames;
+        //public string[] VehicleMakesNames => _db.VehicleMakeNames;
         public Vehicletypes GetVehicleType(string name) => _db.GetVehicleType(name);
 
     }

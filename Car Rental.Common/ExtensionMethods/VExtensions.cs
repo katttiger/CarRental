@@ -23,5 +23,6 @@ namespace Car_rental.ExtensionMethods
         public static double DaysDriven(double daysHired, double costDay)
         {
             return daysHired * costDay;
-        }    }
+        }
+    }
 }

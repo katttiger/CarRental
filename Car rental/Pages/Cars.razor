@@ -19,9 +19,9 @@
 }
 
 @*Sorting function*@
-<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus()">All</button>
-<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Available)">Available</button>
-<button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Booked)">Booked</button>
+    <button class="btn btn-primary" type="button" @onclick="()=>bp.UpdateVStatus()">All</button>
+    <button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Available)">Available</button>
+    <button class="btn btn-primary" @onclick="()=>bp.UpdateVStatus(VehicleStatuses.Booked)">Booked</button>
 
 <!--Row-->
 <table class="table table-striped ">
@@ -107,7 +107,7 @@
                 </td>
             </tr>
         }
-        @foreach (var car in bp.GetVehicles(bp.vStatus))
+        @foreach (var car in bp.GetVehicles1(bp.vStatus))
         {
             <tr>
                 <th scope="row">
@@ -152,7 +152,7 @@
                         {
                             <div class="input-group-sm d-flex">
                                 <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Customer.Id>
-                                    <option value="Customer" selected></option>
+                                    <option value="" selected></option>
                                     @foreach (var cust in bp.GetCustomers())
                                     {
                                         <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
