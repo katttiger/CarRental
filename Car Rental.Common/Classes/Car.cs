@@ -5,7 +5,6 @@ namespace Car_Rental.Common.Classes
 {
     public class Car : Vehicle
     {
-
         public Car(int id, string vin, string make, Vehicletypes vehicleType,
             double odo, double pKm, double pDay, VehicleStatuses on)
         {
@@ -22,5 +21,7 @@ namespace Car_Rental.Common.Classes
         {
 
         }
+
+        
     }
 }

@@ -8,12 +8,10 @@ namespace Car_Rental.Common.Interface
         int Id { get; }
         ICustomer Customer { get; init; }
         IVehicle Vehicle { get; init; }
-        public double Odometer { get; set; }
         public double DrivenKm { get; set; }
         DateTime DayRented { get; init; }
         DateTime DayReturned { get; }
         double CostToPay { get; set; }
-        public string VIN { get; init; }
         public bool isOpen { get; set; }
 
         public double ReturnVehicle(IVehicle vehicle, double kmDriven);

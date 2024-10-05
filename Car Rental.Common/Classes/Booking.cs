@@ -9,15 +9,12 @@ namespace Car_Rental.Common.Classes
         public int Id { get; set; }
         public ICustomer Customer { get; init; }
         public IVehicle Vehicle { get; init; }
-        public string VIN { get; init; }
-        public double Odometer { get; set; }
         public double DrivenKm { get; set; }
         public DateTime DayRented { get; init; }
         public DateTime DayReturned { get; private set; }
         public double DailyCost { get; set; }
         public double KmCost { get; set; }
         public double CostToPay { get; set; }
-
         public bool isOpen { get; set; }
 
         public Booking(int id, ICustomer cust, IVehicle v, bool IsOpen=true)
@@ -25,9 +22,7 @@ namespace Car_Rental.Common.Classes
             Id = id;
             Customer = cust;
             Vehicle = v;
-            VIN = v.VIN;
             DayRented = DateTime.Now;
-            Odometer = v.Odometer;
             Vehicle.ChangeStatus(VehicleStatuses.Available);
             DailyCost = Vehicle.PriceDay;
             KmCost = Vehicle.PriceKm;

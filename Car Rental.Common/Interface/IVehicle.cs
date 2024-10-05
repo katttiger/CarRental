@@ -12,10 +12,10 @@ namespace Car_Rental.Common.Interface
         public int Id { get; set; }
         public string VIN { get; set; }
         public string Maker { get; set; }
-        public Vehicletypes VehicleType { get; set; }
         public double Odometer { get; set; }
         public double PriceKm { get; set; }
         public double PriceDay => (int)VehicleType;
+        public Vehicletypes VehicleType { get; set; }
         public VehicleStatuses Status{get; set;}
         void UpdateOdomoter(double km);
         void ChangeStatus(VehicleStatuses stat);        
