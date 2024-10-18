@@ -14,7 +14,7 @@ namespace Car_Rental.Common.Classes.Builder
         void BuildOdometer() { }
         void BuildPriceKm() { }
         void PriceDay() { }
-        void BUildVehicleType() { }
+        void BuildVehicleType() { }
         void BuildVehicleStatus() { }
     }
 

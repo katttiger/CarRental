@@ -1,9 +1,4 @@
 ﻿using Car_Rental.Common.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Car_Rental.Common.Classes.Builder
 {
@@ -16,36 +11,35 @@ namespace Car_Rental.Common.Classes.Builder
         }
         public void Reset()
         {
-
             this._vehicle = new();
         }
-        void BuildVIN(string vin)
-        {
+        public void BuildVIN(string vin)
+        {            
             this._vehicle.VIN = vin;
         }
-        void BuildMaker(string maker)
+        public void BuildMaker(string maker)
         {
-
             this._vehicle.Maker = maker;
         }
-        void BuildOdometer(double odometerValue)
+        public void BuildOdometer(double odometerValue)
         {
 
             this._vehicle.Odometer = odometerValue;
         }
-        void BuildPriceKm(double pricePerKm)
+        public void BuildPriceKm(double pricePerKm)
         {
 
             this._vehicle.PriceKm = pricePerKm;
 
         }
-        void BuildVehicleType(Vehicletypes vehicletype)
+
+        public void BuildVehicleType(Vehicletypes vehicletype)
         {
 
             this._vehicle.VehicleType = vehicletype;
 
         }
-        void BuildVehicleStatus(VehicleStatuses vehiclestatus)
+        public void BuildVehicleStatus(VehicleStatuses vehiclestatus)
         {
 
             this._vehicle.Status = vehiclestatus;
@@ -54,6 +48,7 @@ namespace Car_Rental.Common.Classes.Builder
         public Vehicle GetProduct()
         {
             Vehicle result = this._vehicle;
+            result.Id = 1;
             this.Reset();
             return result;
         }
