@@ -15,9 +15,35 @@ namespace Car_Rental.Data.Classes
         readonly List<ICustomer> _persons = new List<ICustomer>();
         readonly List<IVehicle> _vehicles = new List<IVehicle>();
         readonly List<IBooking> _bookings = new List<IBooking>();
+
+        //Generate IDs
         public int NextVehicleId => _vehicles.Count.Equals(0) ? 1 : _vehicles.Max(b => b.Id) + 1;
         public int NextPersonId => _persons.Count.Equals(0) ? 1 : _persons.Max(b => b.Id) + 1;
         public int NextBookingId => _bookings.Count.Equals(0) ? 1 : _bookings.Max(b => b.Id) + 1;
+
+
+        public CollectionData() => SeedData();
+        public void SeedData()
+        {
+            //Add customers
+            Customer customer1 = new Customer(1, "Stina", "Isakson", 12345);
+            Customer customer2 = new Customer(2, "Albert", "Hanson", 74025);
+            Customer customer3 = new Customer(3, "Isak", "Johnson", 59476);
+
+            //Add vehicles
+            Car car1 = new Car(1, "abd231", "volvo", Vehicletypes.Combi, 10000, 1, 200, VehicleStatuses.Available);
+            //Car car2 = new Car(2, "cef567", "saab", Vehicletypes.Sedan, 20000, 1, 100, VehicleStatuses.Available);
+            //Car car3 = new Car(3, "ghi702", "tesla", Vehicletypes.Sedan, 1000, 3, 100, VehicleStatuses.Available);
+            //Car car4 = new Car(4, "jkl542", "jeep", Vehicletypes.Van, 5000, 1.5, 300, VehicleStatuses.Available);
+            //Motorcycle car5 = new Motorcycle(5, "MNO571", "Yamaha", Vehicletypes.Motorcycle, 30000, 0.5, 50, VehicleStatuses.Available);
+
+            _vehicles.Add(car1);
+
+            _persons.Add(customer1);
+            _persons.Add(customer2);
+            _persons.Add(customer3);
+        }
+
 
         //In razor, display in dropdown:
         public string[] VehicleStatusNames() => Enum.GetNames(typeof(VehicleStatuses));
@@ -72,12 +98,12 @@ namespace Car_Rental.Data.Classes
         {
             try
             {
-                FieldInfo? fInfo = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                FieldInfo? fieldInfo = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                  .FirstOrDefault(f => f.FieldType == typeof(List<T>));
 
-                if (fInfo is not null)
+                if (fieldInfo is not null)
                 {
-                    var list = (List<T>)fInfo.GetValue(this);
+                    var list = (List<T>)fieldInfo.GetValue(this);
                     var item = list.SingleOrDefault(expression.Compile());
                     return item;
                 }
@@ -92,58 +118,29 @@ namespace Car_Rental.Data.Classes
         }
 
         //Data att injicera i listorna
-        public CollectionData() => SeedData();
-        public void SeedData()
-        {
-            //Add customers
-            Customer customer1 = new Customer(1, "Stina", "Isakson", 12345);
-            Customer customer2 = new Customer(2, "Albert", "Hanson", 74025);
-            Customer customer3 = new Customer(3, "Isak", "Johnson", 59476);
-
-            //Add vehicles
-            Car car1 = new Car(1, "abd231", "volvo", Vehicletypes.Combi, 10000, 1, 200, VehicleStatuses.Available);
-            //Car car2 = new Car(2, "cef567", "saab", Vehicletypes.Sedan, 20000, 1, 100, VehicleStatuses.Available);
-            //Car car3 = new Car(3, "ghi702", "tesla", Vehicletypes.Sedan, 1000, 3, 100, VehicleStatuses.Available);
-            //Car car4 = new Car(4, "jkl542", "jeep", Vehicletypes.Van, 5000, 1.5, 300, VehicleStatuses.Available);
-            //Motorcycle car5 = new Motorcycle(5, "MNO571", "Yamaha", Vehicletypes.Motorcycle, 30000, 0.5, 50, VehicleStatuses.Available);
-
-            _vehicles.Add(car1);
-
-            foreach (var vehicle in _vehicles)
-            {
-                vehicle.Id = _vehicles.IndexOf(vehicle);
-            }
-
-            _persons.Add(customer1);
-            _persons.Add(customer2);
-            _persons.Add(customer3);
-
-
-
-        }
+       
 
         // Rent och return vehicle
-
         public IBooking RentVehicle(int vehicleId, int customerId)
         {
-            var newV = _vehicles.SingleOrDefault(v => v.Id == vehicleId);
-            var newC = _persons.SingleOrDefault(c => c.Id == customerId);
+            var newVehicle = _vehicles.SingleOrDefault(v => v.Id == vehicleId);
+            var newCustomer = _persons.SingleOrDefault(c => c.Id == customerId);
             //Skapa bokning
-            Booking newB = new Booking(NextBookingId, newC, newV);
-            if (newV is not null && newC is not null)
+            Booking newBooking = new Booking(NextBookingId, newCustomer, newVehicle);
+            if (newVehicle is not null && newCustomer is not null)
             {
-                foreach (var b in _bookings)
+                foreach (var booking in _bookings)
                 {
-                    if (b.Vehicle.Status == VehicleStatuses.Booked)
+                    if (booking.Vehicle.Status == VehicleStatuses.Booked)
                     {
-                        newB.Vehicle.Status = VehicleStatuses.Available;
+                        newBooking.Vehicle.Status = VehicleStatuses.Available;
                     }
                     else
                     {
                         continue;
                     }
                 }
-                return newB;
+                return newBooking;
             }
             else
                 throw new Exception("Vehicle could not be rented");
@@ -152,10 +149,10 @@ namespace Car_Rental.Data.Classes
         {
             try
             {
-                var newB = Single<IBooking>(b => b.Vehicle.Id == vehicleId && b.isOpen == true);
+                var newBooking = Single<IBooking>(b => b.Vehicle.Id == vehicleId && b.isOpen == true);
 
-                if (newB is not null)
-                    return newB;
+                if (newBooking is not null)
+                    return newBooking;
                 else
                     throw new ArgumentNullException("Booking could not be found");
             }
