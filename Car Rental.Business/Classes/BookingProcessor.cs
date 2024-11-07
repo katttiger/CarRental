@@ -17,18 +17,18 @@ namespace Car_Rental.Business.Classes
         public Vehicle Vehicle = new();
         public Booking Booking = new();
 
-        public VehicleStatuses vStatus { get; set; }
+        public VehicleStatuses vehicleStatus { get; set; }
 
         public string error = string.Empty;
         public bool sendError = false;
         public bool hiring = false;
+
         #endregion
         //Bookings
-        //Get full list
-        public IEnumerable<IBooking> GetBookings()=>_db.Get<IBooking>(null);
-        
+        public IEnumerable<IBooking> GetAllBookings() => _db.Get<IBooking>(null);
+
         //Get single
-        public IBooking GetBooking(int vehicleId)
+        public IBooking GetSingleBooking(int vehicleId)
         {
             var booking = _db.Single<IBooking>(i => i.Id.Equals(vehicleId));
             try
@@ -43,64 +43,6 @@ namespace Car_Rental.Business.Classes
             }
         }
 
-        //Customer
-        //Get full list
-        public IEnumerable<ICustomer> GetCustomers()=>_db.Get<ICustomer>(null);
-    //Get single
-        public ICustomer? GetCustomer(string ssn)
-        {
-            var customer = _db.Single<ICustomer>(s => s.SSN.Equals(ssn));
-            try
-            {
-                if (customer is null)
-                    throw new ArgumentNullException();
-                return customer;
-            }
-            catch
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
-        //Vehicle
-        //Get full list
-        public VehicleStatuses UpdateVStatus(VehicleStatuses vehicleStatuses = default)
-        => vStatus = vehicleStatuses;
-
-        public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
-        {
-            var list = _db.Get<IVehicle>(null);
-            if (list is not null)
-            {
-                vStatus = status;
-                var vehicle = list;
-              
-                if (!vStatus.Equals(VehicleStatuses.Available) && !vStatus.Equals(VehicleStatuses.Booked))
-                    return vehicle;
-                else
-                {  
-                    return vehicle.Where(v => v.Status.Equals(vStatus));
-                }
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
-        //Get single
-        public IVehicle? GetVehicle(int vehicleId)
-        {
-            return _db.Single<IVehicle>(v => v.Id.Equals(vehicleId));
-        }
-        //Get single
-        public IVehicle? GetVehicle(string vin)
-        {
-            return _db.Single<IVehicle>(t => t.VIN.Equals(vin));
-        }
-
-        //Async
-        //TODO: Fix errorhandling for when you don't add a customer
         public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
         {
             if (customerId != null && vehicleId != null && vehicleId != 0 && customerId != 0)
@@ -168,62 +110,8 @@ namespace Car_Rental.Business.Classes
             }
         }
 
-        //Add vehicle/customer
-        //add vehicle
-        public void AddVehicle(string make, string vin, double odometer,
-            double costKm, double costDay, VehicleStatuses status, Vehicletypes type)
-        {
-            if (make != null && vin != null && odometer != null
-                && costKm != null && costDay != null && status != null && type != null)
-            {
-                sendError = false;
-                if (Vehicle.VehicleType != Vehicletypes.Motorcycle)
-                {
-                    Vehicle = new Car(_db.NextVehicleId, vin, make, type, odometer, costKm, costDay, status);
-                    _db.Add((IVehicle)Vehicle);
-                }
-                else
-                {
-                    Vehicle = new Motorcycle(_db.NextVehicleId, vin, make, type, odometer, costKm, costDay, status);
-                    _db.Add((IVehicle)Vehicle);
-                }
-            }
-            else
-            {
-                sendError = true;
-                error = "The vehicle could not be added";
-            }
-        }
-        //Add customer
-        public void AddCustomer(int ssn, string fName, string lName)
-        {
-            if (ssn != 0)
-            {
-                if (_db.NextPersonId != null && fName != null && lName != null && ssn != null)
-                {
-                    sendError = false;
-                    Customer = new(_db.NextPersonId, fName, lName, ssn);
-                    _db.Add((ICustomer)Customer);
-                    //edit = false;
-                }
-                else
-                {
-                    error = "Customer could not be added";
-                    sendError = true;
-                }
-            }
-            else
-            {
-                error = "SSN cannot be 0 or empty";
-                sendError = true;
-            }
-        }
 
-        //Calling default interface methods
-        public string[] VehicleStatusNames => _db.VehicleStatusNames();
-        public string[] VehicleTypeNames => _db.VehicleTypeNames;
-        //public string[] VehicleMakesNames => _db.VehicleMakeNames;
-        public Vehicletypes GetVehicleType(string name) => _db.GetVehicleType(name);
+       
 
     }
 }

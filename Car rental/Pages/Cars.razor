@@ -6,11 +6,12 @@
 @using Car_rental.UIComponents;
 
 @inject BookingProcessor bp
+@inject VehicleProcessor vp
 
 <PageTitle>Car rental</PageTitle>
 
 <h1>Car rental</h1>
-<p>Welcome to your local car rental!</p>
+<p>Welcome to your local car rental.</p>
 
 @*Error message*@
 @if (bp.sendError)
@@ -20,101 +21,25 @@
     </div>
 }
 
-<SortingButtons></SortingButtons>
+<SortingButtons OnSortAll="()=>vp.UpdateVehicleStatus()"
+                OnSortBooked="()=>vp.UpdateVehicleStatus(VehicleStatuses.Booked)" 
+                OnSortAvailable="()=>vp.UpdateVehicleStatus(VehicleStatuses.Available)">
+</SortingButtons>
 
 @* Table *@
 <table class="table table-striped">
-   <CarTableHeader></CarTableHeader>
-    <!--Colomn-->
+        <CarTableHeader></CarTableHeader>
     <tbody>
         @if (bp.hiring == true)
         {
-           <CarTableHeaderInputFieldsInactived></CarTableHeaderInputFieldsInactived>
+            <CarTableHeaderInputFieldsInactived></CarTableHeaderInputFieldsInactived>
         }
         else
         {
             <CarTableHeaderInputFieldsActive></CarTableHeaderInputFieldsActive>
         }
-
-        @foreach (Vehicle car in bp.GetVehicles(bp.vStatus))
-        {
-            <tr>
-                <th scope="row">
-                    @car.VIN
-                </th>
-                <td>
-                    @car.Maker
-                </td>
-                <td>
-                    @car.Odometer
-                </td>
-                <td>
-                    @car.PriceKm
-                </td>
-                <td>
-                    @car.VehicleType
-                </td>
-                <td>
-                    @car.PriceDay
-                </td>
-
-                @*--Dropdown for customer--*@
-                <td>
-                    @if (bp.hiring == true)
-                    {
-
-                        <div class="input-group-sm d-flex">
-                            <select class="form-select border border-dark" disabled="disabled " id="inputGroupSelect04" @bind=bp.Customer.Id>
-                                <option value="Customer" selected></option>
-                                @foreach (var cust in bp.GetCustomers())
-                                {
-                                    <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
-                                }
-                            </select>
-                            <button class="btn-sm btn btn-primary" disabled="disabled"> Rent </button>
-                        </div>
-
-                    }
-                    @* Mechanism for booking vehicle *@
-                    else
-                    {
-                        @if (car.Status.Equals(VehicleStatuses.Available))
-                        {
-                            <div class="input-group-sm d-flex">
-                                <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Customer.Id>
-                                    <option value="" selected></option>
-                                    @foreach (var cust in bp.GetCustomers())
-                                    {
-                                        <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
-                                    }
-                                </select>
-                                <button class="btn-sm btn btn-outline-primary" @onclick="()=>bp.RentVehicleAsync(car.Id, bp.Customer.Id)"> Rent </button>
-                            </div>
-
-                        }
-                        else
-                        {
-                            <div class="input-group-sm d-flex">
-                                <input @bind="bp.Booking.DrivenKm" class="small rounded-2" placeholder="Distance" />
-                                <button class="btn-sm btn btn-outline-success" @onclick="()=>bp.ReturnVehicle(car.Id, bp.Booking.DrivenKm)">Return</button>
-                            </div>
-                        }
-                    }
-
-                </td>
-                <td>
-                    @if (@car.Status.Equals(VehicleStatuses.Booked))
-                    {
-                        <span class="badge rounded-pill bg-dark">@car.Status</span>
-                    }
-                    else
-                    {
-                        <span class="badge rounded-pill bg-danger">@car.Status</span>
-                    }
-                </td>
-            </tr>
-        }
+        <CarTableBody></CarTableBody>
     </tbody>
-    </table>
+</table>
 
 <p>Note that all prices are in Swedish crowns (SEK)</p>
