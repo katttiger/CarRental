@@ -1,10 +1,7 @@
-﻿using Car_rental.ExtensionMethods;
-using Car_Rental.Common.Classes;
-using Car_Rental.Common.Classes.Builder;
+﻿using Car_Rental.Common.Classes;
 using Car_Rental.Common.Enum;
 using Car_Rental.Common.Interface;
 using Car_Rental.Data.Interfaces;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -104,19 +101,13 @@ namespace Car_Rental.Data.Classes
             Customer customer3 = new Customer(3, "Isak", "Johnson", 59476);
 
             //Add vehicles
-            Car car1A = new Car(1, "abd231", "volvo", Vehicletypes.Combi, 10000, 1, 200, VehicleStatuses.Available);
+            Car car1 = new Car(1, "abd231", "volvo", Vehicletypes.Combi, 10000, 1, 200, VehicleStatuses.Available);
             //Car car2 = new Car(2, "cef567", "saab", Vehicletypes.Sedan, 20000, 1, 100, VehicleStatuses.Available);
             //Car car3 = new Car(3, "ghi702", "tesla", Vehicletypes.Sedan, 1000, 3, 100, VehicleStatuses.Available);
             //Car car4 = new Car(4, "jkl542", "jeep", Vehicletypes.Van, 5000, 1.5, 300, VehicleStatuses.Available);
             //Motorcycle car5 = new Motorcycle(5, "MNO571", "Yamaha", Vehicletypes.Motorcycle, 30000, 0.5, 50, VehicleStatuses.Available);
 
-            var director = new BuilderVehicleDirector();
-            var builder = new VehicleConcreteBuilder();
-
-            Car car1 = (Car)director.ConstructSkoda(builder);
-
-            _vehicles.Add((Car)director.ConstructSkoda(builder));
-            _vehicles.Add(car1A);
+            _vehicles.Add(car1);
 
             foreach (var vehicle in _vehicles)
             {
