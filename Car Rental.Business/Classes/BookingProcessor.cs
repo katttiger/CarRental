@@ -17,7 +17,7 @@ namespace Car_Rental.Business.Classes
         public Vehicle Vehicle = new();
         public Booking Booking = new();
 
-        public VehicleStatuses vehicleStatus { get; set; }
+        public VehicleStatuses VehicleStatus { get; set; }
 
         public string error = string.Empty;
         public bool sendError = false;
@@ -30,49 +30,54 @@ namespace Car_Rental.Business.Classes
         //Get single
         public IBooking GetSingleBooking(int vehicleId)
         {
-            var booking = _db.Single<IBooking>(i => i.Id.Equals(vehicleId));
-            try
-            {
-                if (booking is null)
-                    throw new ArgumentNullException();
-                return booking;
-            }
-            catch
+            var booking = _db.GetSingle<IBooking>(i => i.Id.Equals(vehicleId));
+            if (booking == null)
             {
                 throw new ArgumentNullException();
             }
+            else
+            {
+                return booking;
+            }
         }
 
-        public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
+        public async Task<IBooking?> RentVehicleAsync(int? vehicleId, int? customerId)
         {
-            if (customerId != null && vehicleId != null && vehicleId != 0 && customerId != 0)
+            if (vehicleId is null or 0)
             {
-                var newB = _db.RentVehicle(vehicleId, customerId);
-                Booking = (Booking)newB;
-                if (newB.Vehicle.Status == VehicleStatuses.Available)
-                {
-                    hiring = false;
-                    sendError = true;
-                    newB.Vehicle.Status = VehicleStatuses.Available;
-                    error = "Vehicle is already booked";
-                    return newB = null;
-                }
-                else
-                {
-                    hiring = true;
-                    _db.Add(newB);
-                    sendError = false;
-                    await Task.Delay(1500);
-                    hiring = false;
-                    return newB;
-                }
+                sendError = true;
+                hiring = false;
+                error = "Must add vehicle";
+                throw new ArgumentNullException(error);
             }
-            else
+            else if (customerId is null or 0)
             {
                 sendError = true;
                 hiring = false;
                 error = "Must add customer";
                 throw new ArgumentNullException(error);
+            }
+            else
+            {
+                var newBooking = _db.RentVehicle((int)vehicleId, (int)customerId);
+                Booking = (Booking)newBooking;
+                if (newBooking.Vehicle.Status == VehicleStatuses.Available)
+                {
+                    hiring = false;
+                    sendError = true;
+                    newBooking.Vehicle.Status = VehicleStatuses.Available;
+                    error = "Vehicle is already booked";
+                    return null;
+                }
+                else
+                {
+                    hiring = true;
+                    _db.Add(newBooking);
+                    sendError = false;
+                    await Task.Delay(1500);
+                    hiring = false;
+                    return newBooking;
+                }
             }
         }
 
@@ -109,9 +114,5 @@ namespace Car_Rental.Business.Classes
                 throw new Exception();
             }
         }
-
-
-       
-
     }
 }

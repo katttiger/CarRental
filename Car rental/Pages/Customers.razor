@@ -2,6 +2,8 @@
 @using Car_Rental.Business.Classes
 @using Car_Rental.Common.Interface
 @using Car_Rental.Common.Enum
+@using Car_rental.UIComponents.Customers
+
 @inject BookingProcessor bp
 @inject CustomerProcessor cp;
 
@@ -15,57 +17,11 @@
         <strong>Error: </strong>@bp.error
     </div>
 }
-<!--Customers-->
-<table class="table">
-    <!--Row-->
-    <thead class="table-secondary fw-bold">
-        <tr>
-            <th scope="col">SSN</th>
-            <th scope="col">Last name</th>
-            <th scope="col">First name</th>
-        </tr>
-    </thead>
 
-    <!--Column-->
-    @*Problem: Added customer is edited when added to the list.
-    Good thing: I can add customers.
-    *@
+<table class="table table-striped">
+    <CustomerTableHeader></CustomerTableHeader>
+    <CustomerTableHeaderInputFields></CustomerTableHeaderInputFields>
     <tbody>
-        <tr>
-            @try
-            {
-                <td><input @bind="bp.Customer.SSN" placeholder="SSN" /></td>
-                <td><input @bind="bp.Customer.LastName" placeholder="Last name" /> </td>
-                <td>
-                    <input @bind="bp.Customer.FirstName" placeholder="First name" />
-                    &nbsp;
-                    <button class="btn btn-outline-success" @onclick="()=>cp.AddCustomer
-                    (bp.Customer.SSN, bp.Customer.FirstName, bp.Customer.LastName)">
-                        Add
-                    </button>
-                </td>
-
-            }
-            catch (Exception)
-            {
-                throw new ArgumentNullException();
-            }
-        </tr>
-        @foreach (var cust in cp.GetCustomers())
-        {
-
-            <tr>
-                <td scope="row">
-                    @cust.SSN
-                </td>
-
-                <td>
-                    @cust.LastName
-                </td>
-                <td>
-                    @cust.FirstName
-                </td>
-            </tr>
-        }
+        <CustomerTableBody></CustomerTableBody>
     </tbody>
 </table>
