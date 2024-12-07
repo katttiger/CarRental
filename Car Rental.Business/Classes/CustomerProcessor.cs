@@ -27,7 +27,6 @@ namespace Car_Rental.Business.Classes
         public bool sendError = false;
         #endregion
 
-
         //Customer
         //Get full list
         public IEnumerable<ICustomer> GetCustomers() => _db.Get<ICustomer>(null);

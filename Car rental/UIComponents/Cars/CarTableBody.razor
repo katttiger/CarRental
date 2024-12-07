@@ -9,7 +9,7 @@
 @inject CustomerProcessor cp
 
 
-@foreach (var vehicle in vp.GetVehicles(vp.vehicleStatus))
+@foreach (var vehicle in vp.GetVehicles(vp.VehicleStatus))
 {
     <tr>
         <th scope="row">
@@ -35,7 +35,6 @@
         <td>
             @if (bp.hiring == true)
             {
-
                 <div class="input-group-sm d-flex">
                     <select class="form-select border border-dark" disabled="disabled " @bind=bp.Customer.Id>
                         <option value="Customer" selected></option>
@@ -46,22 +45,21 @@
                     </select>
                     <button class="btn-sm btn btn-primary" disabled="disabled"> Rent </button>
                 </div>
-
             }
-            @* Mechanism for booking vehicle *@
+
             else
             {
                 @if (vehicle.Status.Equals(VehicleStatuses.Available))
                 {
                     <div class="input-group-sm d-flex">
-                        <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Customer.Id>
+                        <select class="form-select border border-dark" @bind=bp.Customer.Id>
                             <option value="" selected></option>
                             @foreach (var customer in cp.GetCustomers())
                             {
-                                <option value="@customer.Id"> (@customer.SSN) @customer.LastName, @customer.FirstName</option>
+                                <option value="@customer.Id">(@customer.SSN) @customer.LastName, @customer.FirstName</option>
                             }
                         </select>
-                        <button class="btn-sm btn btn-outline-primary" @onclick="()=>bp.RentVehicleAsync(vehicle.Id, bp.Customer.Id)"> Rent </button>
+                        <button class="btn-sm btn btn-outline-primary" @onclick="RentVehicle">Rent</button>
                     </div>
 
                 }
@@ -69,7 +67,7 @@
                 {
                     <div class="input-group-sm d-flex">
                         <input @bind="bp.Booking.DrivenKm" class="small rounded-2" placeholder="Distance" />
-                        <button class="btn-sm btn btn-outline-success" @onclick="()=>bp.ReturnVehicle(vehicle.Id, bp.Booking.DrivenKm)">Return</button>
+                        <button class="btn-sm btn btn-outline-success" @onclick="OnReturnVehicle">Return</button>
                     </div>
                 }
             }
@@ -86,4 +84,21 @@
             }
         </td>
     </tr>
+}
+
+@code{
+    [Parameter]
+    public EventCallback RentVehicle{ get; set; }
+
+    [Parameter]
+    public EventCallback ReturnVehicle { get; set; }
+
+    public async Task OnReturnVehicle(){
+        await ReturnVehicle.InvokeAsync();
+    }
+
+    public async Task OnRentVehicle(){
+        await RentVehicle.InvokeAsync();
+    }
+
 }

@@ -13,7 +13,7 @@ namespace Car_Rental.Business.Classes
         private readonly IData _db;
         public VehicleProcessor(IData db) => _db = db;
         public Vehicle Vehicle = new();
-        public VehicleStatuses vehicleStatus { get; set; }
+        public VehicleStatuses VehicleStatus { get; set; }
 
         public string error = string.Empty;
         public bool sendError = false;
@@ -22,32 +22,32 @@ namespace Car_Rental.Business.Classes
         //Vehicle
         //Get full list
         public VehicleStatuses UpdateVehicleStatus(VehicleStatuses vehicleStatuses = default)
-        => vehicleStatus = vehicleStatuses;
+        => VehicleStatus = vehicleStatuses;
 
         public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
         {
             var list = _db.Get<IVehicle>(null);
             if (list is not null)
             {
-                return list;
+               return list;
             }
             else
             {
-                throw new ArgumentNullException();
+                ArgumentNullException argumentNullException = new("List could not be found");
+                throw argumentNullException;
             }
         }
         //Get single
-        public IVehicle? GetVehicle(int vehicleId)
+        public IVehicle? GetVehicleById(int vehicleId)
         {
             return _db.GetSingle<IVehicle>(v => v.Id.Equals(vehicleId));
         }
         //Get single
-        public IVehicle? GetVehicle(string vin)
+        public IVehicle? GetVehicleByVIN(string vin)
         {
             return _db.GetSingle<IVehicle>(t => t.VIN.Equals(vin));
         }
 
-        //Add vehicle/customer
         //add vehicle
         public void AddVehicle(string? make, string? vin, double? odometer,
             double? costKm, double? costDay, VehicleStatuses? status, Vehicletypes? type)

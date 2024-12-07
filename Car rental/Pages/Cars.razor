@@ -3,7 +3,7 @@
 @using Car_Rental.Common.Classes;
 @using Car_Rental.Common.Interface;
 @using Car_Rental.Common.Enum;
-@using Car_rental.UIComponents;
+@using Car_rental.UIComponents.Cars;
 
 @inject BookingProcessor bp
 @inject VehicleProcessor vp
@@ -21,9 +21,9 @@
     </div>
 }
 
-<SortingButtons OnSortAll="()=>vp.UpdateVehicleStatus()"
-                OnSortBooked="()=>vp.UpdateVehicleStatus(VehicleStatuses.Booked)" 
-                OnSortAvailable="()=>vp.UpdateVehicleStatus(VehicleStatuses.Available)">
+<SortingButtons OnSortAll="()=>vp.GetVehicles()"
+                OnSortAvailable="()=>vp.GetVehicles(VehicleStatuses.Available)" 
+                OnSortBooked="()=>vp.GetVehicles(VehicleStatuses.Booked)">
 </SortingButtons>
 
 @* Table *@
