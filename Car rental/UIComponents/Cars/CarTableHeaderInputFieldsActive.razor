@@ -1,0 +1,43 @@
+﻿@using Car_Rental.Business.Classes;
+@using Car_Rental.Common.Classes;
+@using Car_Rental.Common.Interface;
+@using Car_Rental.Common.Enum;
+@using Car_rental.UIComponents;
+
+@inject BookingProcessor bp
+@inject VehicleProcessor vp
+@inject CustomerProcessor cp
+
+<tr>
+    <td><input class="form-control" placeholder="VIN" @bind="bp.Vehicle.VIN" /></td>
+    <td><input class="form-control" placeholder="Make" @bind="bp.Vehicle.Maker" /></td>
+    <td><input class="form-control" placeholder="Odometer" @bind="bp.Vehicle.Odometer" /></td>
+    <td><input class="form-control" placeholder="Cost (km)" @bind="bp.Vehicle.PriceKm" /></td>
+    @*Dropdown for vechieltypes *@
+    <td>
+        <div class="input-group d-flex">
+            <select class="form-select border border-dark" @bind=bp.Vehicle.VehicleType>
+                <option value="" selected></option>
+                @foreach (var vType in vp.VehicleTypeNames)
+                {
+                    <option value="@vp.GetVehicleType(vType)">@vType </option>
+                }
+            </select>
+        </div>
+    </td>
+    <td>
+        <input class="form-control" disabled placeholder="@bp.Vehicle.PriceDay" />
+    </td>
+
+    <td></td>
+    <td>
+        <button class="btn btn-outline-success btn"
+                @onclick="()=>vp.AddVehicle(bp.Vehicle.Maker, bp.Vehicle.VIN, bp.Vehicle.Odometer,
+                        bp.Vehicle.PriceKm, bp.Vehicle.PriceDay, VehicleStatuses.Available, bp.Vehicle.VehicleType)">
+            Add
+        </button>
+    </td>
+
+    <td>
+    </td>
+</tr>

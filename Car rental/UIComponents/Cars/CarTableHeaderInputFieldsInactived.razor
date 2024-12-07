@@ -1,0 +1,44 @@
+﻿@using Car_Rental.Business.Classes;
+@using Car_Rental.Common.Classes;
+@using Car_Rental.Common.Interface;
+@using Car_Rental.Common.Enum;
+@using Car_rental.UIComponents;
+
+@inject BookingProcessor bp
+@inject VehicleProcessor bp
+@inject CustomerProcessor cp
+
+<tr>
+    <td><input class="form-control" disabled="disabled" placeholder="VIN" @bind="bp.Vehicle.VIN" /></td>
+    <td><input class="form-control" disabled="disabled" placeholder="Make" @bind="bp.Vehicle.Maker" /></td>
+    <td><input class="form-control" disabled="disabled" placeholder="Odometer" @bind="bp.Vehicle.Odometer" /></td>
+    <td><input class="form-control" disabled="disabled" placeholder="Cost km" @bind="bp.Vehicle.PriceKm" /></td>
+
+    <td>
+        <div class="input-group d-flex disabled">
+            <select class="form-select border border-dark" disabled="disabled" id="inputGroupSelect04" @bind=bp.Vehicle.VehicleType>
+                <option value="" selected></option>
+                @foreach (var vType in bp.VehicleTypeNames)
+                {
+                    <option value="@bp.GetVehicleType(vType)">@vType </option>
+                }
+            </select>
+        </div>
+    </td>
+
+    <td>
+        @*PriceDay*@
+    </td>
+
+    <td>
+        <button class="btn btn-outline-success btn-sm">
+            Add
+        </button>
+    </td>
+    <td>
+        <span class="badge bg-warning">Processing</span>
+    </td>
+    <td>
+        @* Leave empty to lock sort  *@
+    </td>
+</tr>

@@ -1,0 +1,30 @@
+﻿@using Car_Rental.Business
+@using Car_Rental.Business.Classes
+
+@inject CustomerProcessor cp
+@inject BookingProcessor bp
+
+<tr>
+
+    <td><input @bind="cp.Customer.SSN" placeholder="SSN" /></td>
+    <td><input @bind="cp.Customer.LastName" placeholder="Last name" /> </td>
+    <td>
+        <input @bind="cp.Customer.FirstName" placeholder="First name" />
+        &nbsp;
+
+        <button class="btn btn-outline-success" @onclick="()=>cp.AddCustomer
+                    (cp.Customer.SSN, cp.Customer.FirstName, cp.Customer.LastName)">
+            Add
+        </button>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public EventCallback OnAddCustomer { get; set; }
+
+    public async Task AddCustomer()
+    {
+        await OnAddCustomer.InvokeAsync();
+    }
+}

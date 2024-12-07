@@ -1,0 +1,22 @@
+﻿@using Car_Rental.Business
+@using Car_Rental.Business.Classes
+
+@inject CustomerProcessor cp
+@inject BookingProcessor bp
+
+@foreach (var customer in cp.GetCustomers())
+{
+
+    <tr>
+        <td scope="row">
+            @customer.SSN
+        </td>
+
+        <td>
+            @customer.LastName
+        </td>
+        <td>
+            @customer.FirstName
+        </td>
+    </tr>
+}

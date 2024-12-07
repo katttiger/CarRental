@@ -1,0 +1,38 @@
+﻿@using Car_Rental.Business.Classes
+@using Car_Rental.Common.Classes;
+@using Car_Rental.Common.Interface
+@using Car_Rental.Common.Enum
+
+@inject BookingProcessor bp
+
+<div>
+    <button class="btn btn-primary" type="button" @onclick="DisplayAllVehicles">All</button>
+    <button class="btn btn-primary" type="button" @onclick="DisplayAvailableVehicles">Available</button>
+    <button class="btn btn-primary" type="button" @onclick="DisplayBookedVehicles">Booked</button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnSortAvailable { get; set; }
+
+    [Parameter]
+    public EventCallback OnSortBooked { get; set; }
+
+    [Parameter]
+    public EventCallback OnSortAll { get; set; }
+
+    public async Task DisplayAllVehicles()
+    {
+        await OnSortAll.InvokeAsync();
+    }
+
+    public async Task DisplayAvailableVehicles()
+    {
+        await OnSortAvailable.InvokeAsync();
+    }
+
+    public async Task DisplayBookedVehicles()
+    {
+        await OnSortBooked.InvokeAsync();
+    }
+}

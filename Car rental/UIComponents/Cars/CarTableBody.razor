@@ -1,0 +1,89 @@
+﻿@using Car_Rental.Business.Classes;
+@using Car_Rental.Common.Classes;
+@using Car_Rental.Common.Interface;
+@using Car_Rental.Common.Enum;
+@using Car_rental.UIComponents;
+
+@inject BookingProcessor bp
+@inject VehicleProcessor vp
+@inject CustomerProcessor cp
+
+
+@foreach (var vehicle in vp.GetVehicles(vp.vehicleStatus))
+{
+    <tr>
+        <th scope="row">
+            @vehicle.VIN
+        </th>
+        <td>
+            @vehicle.Maker
+        </td>
+        <td>
+            @vehicle.Odometer
+        </td>
+        <td>
+            @vehicle.PriceKm
+        </td>
+        <td>
+            @vehicle.VehicleType
+        </td>
+        <td>
+            @vehicle.PriceDay
+        </td>
+
+        @*--Dropdown for customer--*@
+        <td>
+            @if (bp.hiring == true)
+            {
+
+                <div class="input-group-sm d-flex">
+                    <select class="form-select border border-dark" disabled="disabled " @bind=bp.Customer.Id>
+                        <option value="Customer" selected></option>
+                        @foreach (var cust in cp.GetCustomers())
+                        {
+                            <option value="@cust.Id"> (@cust.SSN) @cust.LastName, @cust.FirstName</option>
+                        }
+                    </select>
+                    <button class="btn-sm btn btn-primary" disabled="disabled"> Rent </button>
+                </div>
+
+            }
+            @* Mechanism for booking vehicle *@
+            else
+            {
+                @if (vehicle.Status.Equals(VehicleStatuses.Available))
+                {
+                    <div class="input-group-sm d-flex">
+                        <select class="form-select border border-dark" id="inputGroupSelect04" @bind=bp.Customer.Id>
+                            <option value="" selected></option>
+                            @foreach (var customer in cp.GetCustomers())
+                            {
+                                <option value="@customer.Id"> (@customer.SSN) @customer.LastName, @customer.FirstName</option>
+                            }
+                        </select>
+                        <button class="btn-sm btn btn-outline-primary" @onclick="()=>bp.RentVehicleAsync(vehicle.Id, bp.Customer.Id)"> Rent </button>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="input-group-sm d-flex">
+                        <input @bind="bp.Booking.DrivenKm" class="small rounded-2" placeholder="Distance" />
+                        <button class="btn-sm btn btn-outline-success" @onclick="()=>bp.ReturnVehicle(vehicle.Id, bp.Booking.DrivenKm)">Return</button>
+                    </div>
+                }
+            }
+
+        </td>
+        <td>
+            @if (vehicle.Status.Equals(VehicleStatuses.Booked))
+            {
+                <span class="badge rounded-pill bg-dark">@vehicle.Status</span>
+            }
+            else
+            {
+                <span class="badge rounded-pill bg-danger">@vehicle.Status</span>
+            }
+        </td>
+    </tr>
+}
