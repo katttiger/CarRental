@@ -32,8 +32,7 @@
     <td></td>
     <td>
         <button class="btn btn-outline-success btn"
-                @onclick="()=>vp.AddVehicle(bp.Vehicle.Maker, bp.Vehicle.VIN, bp.Vehicle.Odometer,
-                        bp.Vehicle.PriceKm, bp.Vehicle.PriceDay, VehicleStatuses.Available, bp.Vehicle.VehicleType)">
+        @onclick=OnAddVehicle>
             Add
         </button>
     </td>
@@ -41,3 +40,15 @@
     <td>
     </td>
 </tr>
+@code{
+    //Add await event to add car
+    [Parameter]
+    public EventCallback AddVehicle{ get; set; }
+
+    public async Task OnAddVehicle()
+    {
+        await AddVehicle.InvokeAsync();
+    }
+
+
+}

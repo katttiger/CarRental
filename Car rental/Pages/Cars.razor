@@ -4,14 +4,16 @@
 @using CarRental.Common.Interface;
 @using CarRental.Common.Enum;
 @using Carrental.UIComponents.Cars;
+@using Carrental.UIComponents.Customers
 
 @inject BookingProcessor bp
 @inject VehicleProcessor vp
 
-<PageTitle>Car rental</PageTitle>
+<PageTitle>Carrental</PageTitle>
 
 <h1>Car rental</h1>
 <p>Welcome to your local car rental.</p>
+<p>All prices are in Swedish crowns (SEK)</p>
 
 @*Error message*@
 @if (bp.sendError)
@@ -21,12 +23,13 @@
     </div>
 }
 
+<h1>VEHICLES</h1>
 <SortingButtons OnSortAll="()=>vp.GetVehicles()"
                 OnSortAvailable="()=>vp.GetVehicles(VehicleStatuses.Available)" 
                 OnSortBooked="()=>vp.GetVehicles(VehicleStatuses.Booked)">
 </SortingButtons>
 
-@* Table *@
+@* Car *@
 <table class="table table-striped">
         <CarTableHeader></CarTableHeader>
     <tbody>
@@ -36,10 +39,114 @@
         }
         else
         {
-            <CarTableHeaderInputFieldsActive></CarTableHeaderInputFieldsActive>
+            <CarTableHeaderInputFieldsActive
+            AddVehicle="()=>vp.AddVehicle
+(bp.Vehicle.Maker, bp.Vehicle.VIN, bp.Vehicle.Odometer,
+                        bp.Vehicle.PriceKm, bp.Vehicle.PriceDay, VehicleStatuses.Available, bp.Vehicle.VehicleType)"    
+            ></CarTableHeaderInputFieldsActive>
         }
         <CarTableBody></CarTableBody>
     </tbody>
 </table>
 
-<p>Note that all prices are in Swedish crowns (SEK)</p>
+
+@* Bookings *@
+<h1>BOOKINGS</h1>
+<p>Handle your bookings down here: </p>
+<table class="table">
+    <!--Rows-->
+    <thead class="table-secondary">
+        <tr>
+            <th scope="col">VIN</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Odometer (km)</th>
+            <th scope="col">Returned (km)</th>
+            <th scope="col">Day rented</th>
+            <th scope="col">Day returned</th>
+            <th scope="col">Cost (SEK)</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+
+    <!--Columns-->
+    <tbody>
+        @foreach (var b in bp.GetAllBookings())
+        {
+            <tr>
+                <!--VIN-->
+                <td>
+                    @b.Vehicle.VIN
+                </td>
+
+                <!--Customer-->
+                <td>
+                    @b.Customer.LastName @b.Customer.FirstName (@b.Customer.SSN)
+                </td>
+
+                <!--Current Odometer-->
+                <td>
+                </td>
+
+                <!--Odometer on returned-->
+                <td>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        @b.DrivenKm
+                    }
+                    else { }
+                </td>
+
+                <!--Day rented-->
+                <td>
+                    @b.DayRented.ToShortDateString()
+                </td>
+
+                <!--Day returned-->
+                <td>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        @b.DayReturned.ToShortDateString()
+                    }
+                </td>
+
+                <!--Cost/day-->
+                <td>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        @b.CostToPay
+                    }
+                    else { }
+                </td>
+                <!--Status-->
+                <td>
+                    @if (@b.Vehicle.Status.Equals(VehicleStatuses.Available))
+                    {
+                        <span class="badge bg-success">Closed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Booked</span>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Customers *@
+<h1>CUSTOMERS</h1>
+@if (bp.sendError == true)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error: </strong>@bp.error
+    </div>
+}
+
+<table class="table table-striped">
+    <CustomerTableHeader></CustomerTableHeader>
+    <CustomerTableHeaderInputFields></CustomerTableHeaderInputFields>
+    <tbody>
+        <CustomerTableBody></CustomerTableBody>
+    </tbody>
+</table>
