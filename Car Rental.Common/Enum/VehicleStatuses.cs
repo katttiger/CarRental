@@ -1,4 +1,4 @@
-﻿namespace Car_Rental.Common.Enum
+﻿namespace CarRental.Common.Enum
 {
     public enum VehicleStatuses
     {

@@ -1,8 +1,8 @@
-﻿@using Car_Rental.Business.Classes;
-@using Car_Rental.Common.Classes;
-@using Car_Rental.Common.Interface;
-@using Car_Rental.Common.Enum;
-@using Car_rental.UIComponents;
+﻿@using CarRental.Business.Classes;
+@using CarRental.Common.Classes;
+@using CarRental.Common.Interface;
+@using CarRental.Common.Enum;
+@using Carrental.UIComponents;
 
 @inject BookingProcessor bp
 @inject VehicleProcessor vp
@@ -36,7 +36,7 @@
             @if (bp.hiring == true)
             {
                 <div class="input-group-sm d-flex">
-                    <select class="form-select border border-dark" disabled="disabled " @bind=bp.Customer.Id>
+                    <select class="form-select border border-dark" disabled @bind=bp.Customer.Id>
                         <option value="Customer" selected></option>
                         @foreach (var cust in cp.GetCustomers())
                         {

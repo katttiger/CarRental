@@ -1,10 +1,10 @@
-﻿using Car_rental.ExtensionMethods;
-using Car_Rental.Common.Classes;
-using Car_Rental.Common.Enum;
-using Car_Rental.Common.Interface;
-using Car_Rental.Data.Interfaces;
+﻿using CarRental.ExtensionMethods;
+using CarRental.Common.Classes;
+using CarRental.Common.Enum;
+using CarRental.Common.Interface;
+using CarRental.Data.Interfaces;
 
-namespace Car_Rental.Business.Classes
+namespace CarRental.Business.Classes
 {
     public class BookingProcessor
     {

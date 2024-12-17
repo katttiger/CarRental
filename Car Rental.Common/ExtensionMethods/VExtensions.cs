@@ -1,7 +1,7 @@
-﻿using Car_Rental.Common.Classes;
+﻿using CarRental.Common.Classes;
 using System.Runtime.CompilerServices;
 
-namespace Car_rental.ExtensionMethods
+namespace CarRental.ExtensionMethods
 {
     public class VExtensions
     {

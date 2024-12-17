@@ -1,7 +1,7 @@
-﻿using Car_Rental.Common.Enum;
-using Car_Rental.Common.Interface;
+﻿using CarRental.Common.Enum;
+using CarRental.Common.Interface;
 
-namespace Car_Rental.Common.Classes
+namespace CarRental.Common.Classes
 {
     public class Motorcycle : Vehicle
     {

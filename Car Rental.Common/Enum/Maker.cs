@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Rental.Common.Enum
+namespace CarRental.Common.Enum
 {
     public enum Maker
     {

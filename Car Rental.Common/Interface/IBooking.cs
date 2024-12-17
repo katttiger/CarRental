@@ -1,7 +1,7 @@
-﻿using Car_Rental.Common.Classes;
-using Car_Rental.Common.Enum;
+﻿using CarRental.Common.Classes;
+using CarRental.Common.Enum;
 
-namespace Car_Rental.Common.Interface
+namespace CarRental.Common.Interface
 {
     public interface IBooking
     {

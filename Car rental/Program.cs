@@ -1,7 +1,7 @@
-using Car_rental;
-using Car_Rental.Business.Classes;
-using Car_Rental.Data.Classes;
-using Car_Rental.Data.Interfaces;
+using Carrental;
+using CarRental.Business.Classes;
+using CarRental.Data.Classes;
+using CarRental.Data.Interfaces;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

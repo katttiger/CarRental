@@ -1,6 +1,6 @@
-﻿using Car_Rental.Common.Interface;
+﻿using CarRental.Common.Interface;
 
-namespace Car_Rental.Common.Classes
+namespace CarRental.Common.Classes
 {
     public class Customer : ICustomer
     {

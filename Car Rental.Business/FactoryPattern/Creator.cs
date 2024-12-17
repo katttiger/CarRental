@@ -1,12 +1,12 @@
-﻿using Car_Rental.Common.Classes;
-using Car_Rental.Common.Interface;
+﻿using CarRental.Common.Classes;
+using CarRental.Common.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Rental.Business.FactoryPattern
+namespace CarRental.Business.FactoryPattern
 {
     public abstract class Creator
     {

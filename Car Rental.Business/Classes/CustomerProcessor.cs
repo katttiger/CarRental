@@ -1,10 +1,10 @@
-﻿using Car_Rental.Common.Classes;
-using Car_Rental.Common.Enum;
-using Car_Rental.Common.Interface;
-using Car_Rental.Data.Interfaces;
+﻿using CarRental.Common.Classes;
+using CarRental.Common.Enum;
+using CarRental.Common.Interface;
+using CarRental.Data.Interfaces;
 using System.Linq.Expressions;
 
-namespace Car_Rental.Business.Classes
+namespace CarRental.Business.Classes
 {
     public class CustomerProcessor
     {

@@ -1,11 +1,11 @@
-﻿using Car_Rental.Common.Enum;
+﻿using CarRental.Common.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Rental.Common.Interface
+namespace CarRental.Common.Interface
 {
     public interface IVehicle
     {
